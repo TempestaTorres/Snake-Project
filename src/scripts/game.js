@@ -28,6 +28,7 @@ export class Game {
 
         this._stateReady = false;
         this._stateGameOver = false;
+        this._statePause = false;
 
         this._canvas = document.querySelector(canvas);
         this._ctx = this._canvas.getContext('2d');
@@ -131,13 +132,17 @@ export class Game {
     }
 
     #pause() {
-        console.log("Paused");
+        if (!this._statePause) {
+            this._statePause = true;
 
-        this.#render();
+            console.log("Paused");
 
-        this._ctx.font = "48px serif";
-        this._ctx.fillStyle = "#fff7eb";
-        this._ctx.fillText("Paused", 240, 240);
+            this.#render();
+
+            this._ctx.font = "48px serif";
+            this._ctx.fillStyle = "#fff7eb";
+            this._ctx.fillText("Paused", 240, 240);
+        }
     }
 
     #gameOver() {
@@ -214,6 +219,7 @@ export class Game {
         }
         else if (this._stateManager.getCurrentState() === STATE_PAUSE) {
             this._stateManager.setNextState(STATE_PLAY);
+            this._statePause = false;
             this._player.play();
         }
     }
