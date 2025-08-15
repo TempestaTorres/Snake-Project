@@ -1,0 +1,66 @@
+:root {
+    --padding-small: 1.6rem;
+    --hud-background-color:  #ffe9c5;
+}
+
+body {
+    font-family: 'Roboto Slab', serif;
+}
+.app-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 100vh;
+}
+.container-small {
+    width: 100%;
+    max-width: 95rem;
+    margin: 0 auto;
+}
+.game-wrapper {
+    height: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.game-board {
+    width: 672px;
+    background-color: #311e00;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.game-hud {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--padding-small);
+    background-color: var(--hud-background-color);
+
+}
+.game-hud-buttons {
+    display: flex;
+    align-items: center;
+    gap: var(--padding-small);
+}
+.button {
+    transition: background-color .25s linear;
+}
+.hud-status-wrapper {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.2em;
+}
+.game-field-wrapper {
+    padding: 1.6rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.game-canvas {
+    border: 2px solid #c47a00;
+}
+.hud-status[data-node-type="game over"] {
+    color: var(--base-color-system--error-red);
+}

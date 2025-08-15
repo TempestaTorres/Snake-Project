@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <link rel="stylesheet" href="src/css/app.css">
+    <script type="module" src="src/scripts/index.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <div class="container-small">
+            <div class="game-wrapper">
+                <div class="game-board">
+                    <!--Hud-->
+                    <div class="game-hud">
+                        <!--Buttons-->
+                        <div class="game-hud-buttons">
+                            <button class="button" id="btn-play" data-node-type="start">Start</button>
+                            <button class="button" id="btn-pause">Pause</button>
+                            <button class="button" id="btn-restart">Restart</button>
+                        </div>
+                        <!--Hud-->
+                        <div class="hud-status-wrapper">
+                            <div class="hud-score"></div>
+                            <div class="hud-status" data-node-type=""></div>
+                        </div>
+                    </div>
+                    <!--Canvas-->
+                    <div class="game-field-wrapper">
+                        <canvas class="game-canvas" width="640" height="480"></canvas>
+                    </div>
+                </div>
+            </div>
+            <audio class="audio" crossorigin="anonymous" loop>
+                <source src="src/music/GroundTheme.mp3" type="audio/mp3"/>
+            </audio>
+            <audio class="audio-game-over" crossorigin="anonymous">
+                <source src="src/music/GameOver.mp3" type="audio/mp3"/>
+            </audio>
+            <audio class="audio-pickups" crossorigin="anonymous">
+                <source src="src/music/CorrectSolution.mp3" type="audio/mp3"/>
+            </audio>
+
+        </div>
+    </div>
+</body>
+</html>
