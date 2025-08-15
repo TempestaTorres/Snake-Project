@@ -27,6 +27,7 @@ export class Game {
         this._deltaTime = 0;
 
         this._stateReady = false;
+        this._stateGameOver = false;
 
         this._canvas = document.querySelector(canvas);
         this._ctx = this._canvas.getContext('2d');
@@ -115,6 +116,7 @@ export class Game {
 
     #restart() {
         this._stateReady = false;
+        this._stateGameOver = false;
         this._stateManager.setNextState(STATE_READY);
     }
 
@@ -139,13 +141,18 @@ export class Game {
     }
 
     #gameOver() {
-        console.log("Game Over");
 
-        this.#render();
+        if (!this._stateGameOver) {
+            this._stateGameOver = true;
 
-        this._ctx.font = "48px serif";
-        this._ctx.fillStyle = "#e30d0d";
-        this._ctx.fillText("Game Over", 200, 240);
+            console.log("Game Over");
+
+            this.#render();
+
+            this._ctx.font = "48px serif";
+            this._ctx.fillStyle = "#e30d0d";
+            this._ctx.fillText("Game Over", 200, 240);
+        }
     }
 
     #input() {
