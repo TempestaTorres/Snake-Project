@@ -8,16 +8,20 @@ export class Snake {
         this._field = field;
         this._fillColor = "#ffb02f";
         this._initialSpeed = speed;
-        this._speed = speed;
+        this._minSpd = 1;
         this._fruit = new Fruit(field, step);
-        this._timerId = 0;
-        this._timerInterval = 10000;
         this._pickup = new AudioPlayer(".audio-pickups");
 
         this._tail = [];
 
     }
     init() {
+        this._interval = 10000;
+        this._startTime = performance.now();
+        this._endTime = this._startTime;
+        this._currentTime = 0;
+        this._deltaTime = 0;
+        this._speed = this._initialSpeed;
         this._spd = this._speed;
         this.score = 0;
         this._exist = true;
@@ -72,11 +76,6 @@ export class Snake {
 
             this._tail.push(tailCell);
         }
-
-        if (this._timerId !== 0) {
-            clearInterval(this._timerId);
-        }
-        this._timerId = setInterval(this.#speedUpdate.bind(this), this._timerInterval);
     }
     move(direction) {
 
@@ -105,7 +104,9 @@ export class Snake {
         // Draw Fruit
         this._fruit.render(ctx);
     }
-    update() {
+    update(timestamp) {
+
+        this.#speedUpdate(timestamp);
 
         if (--this._spd <= 0) {
 
@@ -253,12 +254,20 @@ export class Snake {
         this._tail.push(tailCell);
 
     }
-    #speedUpdate() {
+    #speedUpdate(timestamp) {
 
-        if (--this._speed <= 3) {
-            this._speed = this._initialSpeed;
+        this._currentTime = timestamp;
+        this._deltaTime = this._currentTime - this._endTime;
+
+        if (this._deltaTime > this._interval) {
+
+            this._endTime = this._currentTime - (this._deltaTime % this._interval);
+
+            if (--this._speed <= this._minSpd) {
+                this._speed = this._initialSpeed;
+            }
+            this._spd = this._speed;
         }
-        this._spd = this._speed;
     }
     #getCell(row, col) {
 
@@ -321,7 +330,5 @@ export class Snake {
             this._spawned = false;
             this._fruit.reset();
         }
-        clearInterval(this._timerId);
-        this._timerId = 0;
     }
 }

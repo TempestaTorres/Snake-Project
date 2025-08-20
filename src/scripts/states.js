@@ -17,7 +17,7 @@ export class StateManager {
     setNextState(nextState) {
         this._nextState = nextState;
     }
-    stateUpdate() {
+    stateUpdate(timestamp) {
 
         if (this._nextState > 0) {
             this._currentState = this._nextState;
@@ -25,7 +25,7 @@ export class StateManager {
         }
         if (this._currentState > 0) {
             let state = this._states[this._currentState - 1];
-            state.callback();
+            state.callback(timestamp);
         }
     }
     getCurrentState() {

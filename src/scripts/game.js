@@ -99,14 +99,14 @@ export class Game {
 
             this._endTime = this._currentTime - (this._deltaTime % this._interval);
 
-            this._stateManager.stateUpdate();
+            this._stateManager.stateUpdate(timestamp);
 
             this.#controller();
         }
         requestAnimationFrame(this.#gameLoop.bind(this));
     }
 
-    #ready() {
+    #ready(timestamp) {
 
         if (!this._stateReady) {
             this._snake.init();
@@ -115,23 +115,23 @@ export class Game {
         }
     }
 
-    #restart() {
+    #restart(timestamp) {
         this._stateReady = false;
         this._stateGameOver = false;
         this._stateManager.setNextState(STATE_READY);
     }
 
-    #play() {
+    #play(timestamp) {
 
         //Input
         this.#input();
         //Update
-        this.#update();
+        this.#update(timestamp);
         // Render
         this.#render();
     }
 
-    #pause() {
+    #pause(timestamp) {
         if (!this._statePause) {
             this._statePause = true;
 
@@ -145,7 +145,7 @@ export class Game {
         }
     }
 
-    #gameOver() {
+    #gameOver(timestamp) {
 
         if (!this._stateGameOver) {
             this._stateGameOver = true;
@@ -180,9 +180,9 @@ export class Game {
         }
     }
 
-    #update() {
+    #update(timestamp) {
 
-        this._snake.update();
+        this._snake.update(timestamp);
 
         this._keyboardManager.reset();
     }
