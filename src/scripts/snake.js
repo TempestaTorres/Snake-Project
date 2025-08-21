@@ -1,5 +1,6 @@
 import {Fruit} from "./fruit.js";
 import {AudioPlayer} from "./audio.js";
+import {Timer} from "./timer.js";
 
 export class Snake {
     constructor(field, step, speed) {
@@ -12,15 +13,12 @@ export class Snake {
         this._fruit = new Fruit(field, step);
         this._pickup = new AudioPlayer(".audio-pickups");
 
+        this._timer = new Timer(0.1);
         this._tail = [];
 
     }
     init() {
-        this._interval = 10000;
-        this._startTime = performance.now();
-        this._endTime = this._startTime;
-        this._currentTime = 0;
-        this._deltaTime = 0;
+        this._timer.init();
         this._speed = this._initialSpeed;
         this._spd = this._speed;
         this.score = 0;
@@ -109,15 +107,16 @@ export class Snake {
         this.#speedUpdate(timestamp);
 
         if (--this._spd <= 0) {
-
+            //Update Snake
             this._spd = this._speed;
             this.#headUpdate();
 
+            //Spawn Fruit
             if (!this._spawned && this._exist) {
-                this._spawned = true;
-
-                setTimeout(this.#spawnFruit.bind(this), 3000);
+                this.#spawnFruit();
             }
+            //Update Fruit
+            this._fruit.update(timestamp);
         }
     }
     #headUpdate() {
@@ -256,12 +255,7 @@ export class Snake {
     }
     #speedUpdate(timestamp) {
 
-        this._currentTime = timestamp;
-        this._deltaTime = this._currentTime - this._endTime;
-
-        if (this._deltaTime > this._interval) {
-
-            this._endTime = this._currentTime - (this._deltaTime % this._interval);
+        if (this._timer.update(timestamp)) {
 
             if (--this._speed <= this._minSpd) {
                 this._speed = this._initialSpeed;
@@ -302,6 +296,7 @@ export class Snake {
         //Spawn fruit
         if (this._exist) {
             this._fruit.spawn();
+            this._spawned = true;
         }
     }
 

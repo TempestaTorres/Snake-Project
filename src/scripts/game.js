@@ -3,28 +3,14 @@ import {KeyboardManager} from "./keyboard.js";
 import {StateManager} from "./states.js";
 import {Hud} from "./hud.js";
 import {AudioPlayer} from "./audio.js";
-
-const KEY_W = 87;
-const KEY_D = 68;
-const KEY_S = 83;
-const KEY_A = 65;
-
-const STATE_READY = 1;
-const STATE_PLAY = 2;
-const STATE_PAUSE = 3;
-const STATE_RESTART = 4;
-const STATE_GAMEOVER = 5;
+import {Timer} from "./timer.js";
+import defines from "./defines.js";
 
 export class Game {
     constructor(canvas, cellSize) {
         console.log('Happy developing ✨');
 
-        this._fps = 60;
-        this._interval = Math.floor(1000 / this._fps);
-        this._startTime = performance.now();
-        this._endTime = this._startTime;
-        this._currentTime = 0;
-        this._deltaTime = 0;
+        this._timer = new Timer(defines.FPS);
 
         this._stateReady = false;
         this._stateGameOver = false;
@@ -41,13 +27,13 @@ export class Game {
         this._keyboardManager = new KeyboardManager();
 
         this._stateManager = new StateManager();
-        this._stateManager.registerState(STATE_READY, this.#ready.bind(this));
-        this._stateManager.registerState(STATE_PLAY, this.#play.bind(this));
-        this._stateManager.registerState(STATE_PAUSE, this.#pause.bind(this));
-        this._stateManager.registerState(STATE_RESTART, this.#restart.bind(this));
-        this._stateManager.registerState(STATE_GAMEOVER, this.#gameOver.bind(this));
+        this._stateManager.registerState(defines.STATE_READY, this.#ready.bind(this));
+        this._stateManager.registerState(defines.STATE_PLAY, this.#play.bind(this));
+        this._stateManager.registerState(defines.STATE_PAUSE, this.#pause.bind(this));
+        this._stateManager.registerState(defines.STATE_RESTART, this.#restart.bind(this));
+        this._stateManager.registerState(defines.STATE_GAMEOVER, this.#gameOver.bind(this));
 
-        this._stateManager.setNextState(STATE_READY);
+        this._stateManager.setNextState(defines.STATE_READY);
 
         this._hud = new Hud();
 
@@ -92,12 +78,7 @@ export class Game {
     // Main Game Loop
     #gameLoop(timestamp) {
 
-        this._currentTime = timestamp;
-        this._deltaTime = this._currentTime - this._endTime;
-
-        if (this._deltaTime > this._interval) {
-
-            this._endTime = this._currentTime - (this._deltaTime % this._interval);
+        if (this._timer.update(timestamp)) {
 
             this._stateManager.stateUpdate(timestamp);
 
@@ -118,7 +99,8 @@ export class Game {
     #restart(timestamp) {
         this._stateReady = false;
         this._stateGameOver = false;
-        this._stateManager.setNextState(STATE_READY);
+        this._timer.init();
+        this._stateManager.setNextState(defines.STATE_READY);
     }
 
     #play(timestamp) {
@@ -162,19 +144,19 @@ export class Game {
 
     #input() {
 
-        if (this._keyboardManager.isKeyPressed(KEY_W)) {
+        if (this._keyboardManager.isKeyPressed(defines.KEY_W)) {
             console.log("Key W Pressed");
             this._snake.move(0);
         }
-        else if (this._keyboardManager.isKeyPressed(KEY_D)) {
+        else if (this._keyboardManager.isKeyPressed(defines.KEY_D)) {
             console.log("Key D Pressed");
             this._snake.move(1);
         }
-        else if (this._keyboardManager.isKeyPressed(KEY_S)) {
+        else if (this._keyboardManager.isKeyPressed(defines.KEY_S)) {
             console.log("Key S Pressed");
             this._snake.move(2);
         }
-        else if (this._keyboardManager.isKeyPressed(KEY_A)) {
+        else if (this._keyboardManager.isKeyPressed(defines.KEY_A)) {
             console.log("Key A Pressed");
             this._snake.move(3);
         }
@@ -196,8 +178,8 @@ export class Game {
 
         this._hud.update(this._stateManager.getCurrentState(), this._snake.score);
 
-        if (this._snake.isDead() && this._stateManager.getCurrentState() === STATE_PLAY) {
-            this._stateManager.setNextState(STATE_GAMEOVER);
+        if (this._snake.isDead() && this._stateManager.getCurrentState() === defines.STATE_PLAY) {
+            this._stateManager.setNextState(defines.STATE_GAMEOVER);
             this._player.stop();
             this._gameOver.play();
         }
@@ -205,20 +187,20 @@ export class Game {
     buttonPlayClick(e) {
         e.preventDefault();
 
-        if (this._stateManager.getCurrentState() === STATE_READY) {
-            this._stateManager.setNextState(STATE_PLAY);
+        if (this._stateManager.getCurrentState() === defines.STATE_READY) {
+            this._stateManager.setNextState(defines.STATE_PLAY);
             this._player.play();
         }
     }
     buttonPauseClick(e) {
         e.preventDefault();
 
-        if (this._stateManager.getCurrentState() === STATE_PLAY) {
-            this._stateManager.setNextState(STATE_PAUSE);
+        if (this._stateManager.getCurrentState() === defines.STATE_PLAY) {
+            this._stateManager.setNextState(defines.STATE_PAUSE);
             this._player.pause();
         }
-        else if (this._stateManager.getCurrentState() === STATE_PAUSE) {
-            this._stateManager.setNextState(STATE_PLAY);
+        else if (this._stateManager.getCurrentState() === defines.STATE_PAUSE) {
+            this._stateManager.setNextState(defines.STATE_PLAY);
             this._statePause = false;
             this._player.play();
         }
@@ -226,8 +208,8 @@ export class Game {
     buttonRestartClick(e) {
         e.preventDefault();
 
-        if (this._stateManager.getCurrentState() === STATE_GAMEOVER) {
-            this._stateManager.setNextState(STATE_RESTART);
+        if (this._stateManager.getCurrentState() === defines.STATE_GAMEOVER) {
+            this._stateManager.setNextState(defines.STATE_RESTART);
             this._player.stop();
         }
     }
